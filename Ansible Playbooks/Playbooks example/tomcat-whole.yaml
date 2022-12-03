@@ -1,0 +1,42 @@
+#ansible3 play book
+
+host: all or web
+remote_user: ec2-user
+become: yes
+vars:
+  tomcat_port: 9000 
+tasks:
+  - name: Going to update all the packages
+    yum:
+      name: '*'
+      state: present
+  
+  - name: Going to install java
+    yum:
+      name: java-1.8.0-open jdk
+      state: present 
+  
+  - name: Going to install apache tomcat appserver
+    get_url:
+      url: https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.79/bin/apache-tomcat-8.5.79.zip
+      dest: /usr/local
+      mode: '0777'
+  
+  - name: Going to unarchiving / unzipping the apache tomcat webserver
+    unarchive:
+      src: /usr/local/apache-tomcat-8.5.79.zip
+      remote_src: True
+      mode: '0777'
+  
+  - name: Going to change the parameter in the configuration file of apache tomcat
+    template:
+      src: ./server.xml.j2
+      dest: /usr/local/apache-tomcat-8.5.79/conf/server.xml
+  
+  - name: Going to start the apache tomcat webserver
+    shell: nohup /usr/local/apache-tomcat-8.5.79/bin/startup.sh &
+  
+  - name: Going to deply the sample.war file in tomcat by moving the file to the apache-tomcat path
+    copy:
+      src: ./sample.war
+      dest: /usr/local/apache-tomcat-8.5.79/webaps/sample.war

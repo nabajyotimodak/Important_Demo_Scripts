@@ -1,0 +1,23 @@
+
+
+# To create a basic namespace in K8 cluster.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  blue
+
+---
+
+
+
+
+---
+
+
+
+
+
+
+
+
+

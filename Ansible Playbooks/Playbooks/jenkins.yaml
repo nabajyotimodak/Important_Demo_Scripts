@@ -1,0 +1,64 @@
+# Jenkins installation
+- hosts: jen
+  remote_user: ec2-user
+  become: yes
+  vars:
+      PORT: 6666
+  tasks:
+    - name: Update slaves servers
+      yum:
+        name: "*"
+        state: present
+    - name: Add jenkins repository
+      yum_repository:
+        name: jenkins-repo                                            # Not mandatory
+        description: Adding Jenkins Repo                              # Not mandatory
+        baseurl: http://pkg.jenkins.io/redhat-stable                  # Has to hit the repo URL, then get the baseurl
+        gpgkey: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+    - name: Install package Java & Jenkins
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - java-1.8.0-openjdk-devel
+        - jenkins
+    - name: Addline in file 
+      lineinfile:
+        path: /home/ec2-user/.bash_profile
+        line: JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.332.b09-1.amzn2.0.2.x86_64
+        create: yes
+    - name: Edit line in file 
+      lineinfile:
+        path: /home/ec2-user/.bash_profile
+        regexp: '^PATH=$PATH:$HOME/.local/bin:$HOME/bin'
+        line: PATH=$PATH:$JAVE_HOME:$HOME/.local/bin:$HOME/bin
+    - name: Start jenkins
+      service:
+        name: jenkins
+        state: started
+    - name: daemon-reload to pick up config changes
+      systemd:
+        daemon_reload: yes
+    - name: Start jenkins
+      systemd:
+        name: jenkins
+        state: started
+   # - name: Start jenkins
+   #   sysctl:
+   #     name: jenkins
+   #     value: 2
+   #     state: present
+   #     ignorerrors: yes
+
+   
+    - name: Change the line of Jenkins port number
+      lineinfile:
+        path: /etc/sysconfig/jenkins
+        regexp: '^JENKINS_PORT='                             # regexp: '^SELINUX='
+        line: JENKINS_PORT={{PORT}}                          # line: SELINUX=enforcing
+      notify: Restart Jenkins
+  handlers:
+    - name: Restart Jenkins
+      service:
+        name: jenkins
+        state: restarted

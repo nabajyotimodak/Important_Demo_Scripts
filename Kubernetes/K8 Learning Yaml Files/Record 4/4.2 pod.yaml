@@ -1,0 +1,167 @@
+# To create a Simple POD
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-1
+spec:
+  containers:
+  - name: cont1
+    image: httpd
+                          # As we didn't mention any namespace, by default it will create in 'Default namespace'
+
+---
+
+# To create a Simple POD in a particular namespace (greens)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-1
+  namespace: greens
+spec:
+  containers:
+  - name: cont1
+    image: httpd
+
+
+---
+
+# To create a Simple POD in a particular namespace (greens) with 2 containers
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-2
+  namespace: greens
+spec:
+  containers:
+  - name: cont1
+    image: httpd
+  - name: cont2
+    image: ubuntu:latest
+
+    # OMIT THIS SECTION AS OF NOW
+    resources:              # This section we will omit as of now
+    #ports:                     This section we will omit as of now
+      #- containerPort: 80
+
+
+---
+
+# To create a Simple POD in a particular namespace (greens) with 2 containers httpd & Jenkins
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-2
+  namespace: greens
+spec:
+  containers:
+  - name: cont1
+    image: httpd
+  - name: cont2
+    image: Jenkins/jenkins:lts 
+
+
+---
+
+# To create a Simple POD in a particular namespace (greens) with 2 containers httpd & Jenkins
+# With resources (Request & Limit)
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-2
+  namespace: greens
+spec:
+  containers:
+  - name: container1
+    image: httpd
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+  - name: container2
+    image: Jenkins/jenkins:lts
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+
+
+
+---
+
+# To create a POD named pod-3, with one container along with resources (requests and limits)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-3
+  namespace: greens
+spec:
+  containers:
+  - name: container-1
+    image: httpd
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+
+
+---
+
+# To create a POD directly reffered by VSC with yaml and K8 extensions
+apiVersion: v1
+kind: Pod
+metadata:
+  name: naba-pod
+  #labels:                        #Omit this while copying
+    #name: my-naba-app                  #Omit this while copying
+spec:
+  containers:
+  - name: container-1
+    image: httpd
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    #ports:                       omit this section as of now
+      #- containerPort: 80
+
+
+
+---
+
+
+# STRUCTURE OF THE YAML FILE FOR CREATING A POD (Includes Everything)
+
+apiVersion: v1
+kind: Pod
+metadata:             # Basic data of the pod
+  name: <pod name>
+  namespace: <namespace name where we want to create the pod>
+  labels:
+    name: <label name that we want to give for the pod/s>
+    app: <name of the application for which this pod will run>
+spec:   # Specification of the pod. Meaning, inside the pod what containers will run and what will be their configurations
+  containers:       # Information of the container/s that will run inside the pod
+  - name: <name of the container that we want to give>
+    image: <In which Image the container will run? Docker hub / personalized>
+    resources:        # Specifications for the containers, such as requests, limits, container-port etc.
+      requests:
+        memory: "68Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80       #Any port number on which the container will run

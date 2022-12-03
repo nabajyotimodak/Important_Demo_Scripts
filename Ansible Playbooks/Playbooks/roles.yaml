@@ -1,0 +1,20 @@
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  roles:
+    - apache 
+
+    
+    - jenkins
+    - terraform
+  tasks:
+    - name: Task 1
+      module:
+        name: package name
+        state: present
+      notify: Action 1 
+  handlers:
+    - name: Action 1
+      module:
+        name: package
+        state: present

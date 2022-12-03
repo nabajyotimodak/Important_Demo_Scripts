@@ -1,0 +1,59 @@
+# To create a deployment + replicaset + pods + (deployment strategy)
+# So, here we are not mentioning any deployment strategy, thus, it will pick the default one (rolling update)
+# As no namespace also, the pods will get create in default namespace.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-example
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14               # Run this image
+        
+        #resources:
+          #requests:
+            #memory: "64Mi"
+            #cpu: "250m"
+          #limits:
+            #memory: "128Mi"
+            #cpu: "500m"
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-example              # Unique key of the Deployment instance
+spec:
+  replicas: 3                       # 3 Pods should exist at all times.
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        # Apply this label to pods and default
+        # the Deployment label selector to this value
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        # Run this image
+        image: nginx:1.14
+        resources:
+        requests:
+          memory: "64Mi"
+          cpu: "250m"
+        limits:
+          memory: "128Mi"
+          cpu: "500m"

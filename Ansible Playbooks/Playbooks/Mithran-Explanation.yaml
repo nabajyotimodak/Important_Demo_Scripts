@@ -1,0 +1,84 @@
+# httpd installation
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  tasks:
+    - name: Update slaves servers
+      yum:
+        name: "*"
+        state: present
+    - name: Install Apache httpd
+      yum:
+        name:  httpd
+        state: present
+    - name: Start Apache
+      service:
+        name: httpd
+        state: started
+    - name: copy html file to Apache path
+      copy:
+        src: /home/ec2-user/index.html
+        dest: /var/www/html/
+        mode: '777'
+
+---
+- hosts: all
+  remote_user: ansadmin
+  become: yes
+  tasks:
+    - name: Update slaves servers
+      yum:
+        name: "*"
+        state: present
+    - name: Install Apache httpd
+      yum:
+        name:  httpd
+        state: present
+    - name: Start Apache
+      service:
+        name: httpd
+        state: started
+
+
+---
+
+# vi practice.yaml
+# Copy --> Paste
+# ansible-playbook -i slaves.txt practice.yaml
+
+---
+# Loop Concept in playbook
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  tasks:
+    - name: Installing the Packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php
+        - mysql
+        - unzip
+        - http_present      # To understand the colour coding, Like such no package is there. Simply given to check the colour coding.
+
+---
+# Loop Concept in playbook
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  tasks:
+    - name: Installing the Packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php
+        - mysql
+    - name: Installing the Packages
+      yum:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - unzip
+        - http_present

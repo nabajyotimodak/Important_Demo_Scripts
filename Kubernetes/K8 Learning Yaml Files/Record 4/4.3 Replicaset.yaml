@@ -1,0 +1,39 @@
+# To create a replica set of 3 pods with httpd image running in the containers
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset-example
+spec:
+  replicas: 3
+  selector:             # Ignore this sectipn as of now from here
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx      # Ignore up to this
+    spec:
+      containers:
+      - name: cont1   # this is name of the container in each different 3 pods
+        image: httpd
+
+---
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset-example        # Unique key of the ReplicaSet instance (unique name)
+spec:
+  replicas: 3                     # 3 Pods should exist at all times. (replicaset 3 = no. of pods 3)
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx               # Run the nginx image (let. the docker container is running with the nginx image)
+        image: nginx:1.14
+

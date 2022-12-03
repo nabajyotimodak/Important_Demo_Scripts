@@ -1,0 +1,18 @@
+host: all
+remote_user: ec2-user
+become: yes
+tasks: 
+   - name: Going to update ubuntu
+     yum:
+      name: '*'
+      state: present
+   - name: Going to install java
+     yum:
+      name: java-1.8.0-open jdk
+      state: present
+   - name: Going to install Apache-Tomcat appserver
+     get_url:
+      url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.1.79/bin/apache-tomcat-9.1.79.zip
+      dest: /usr/local
+      
+      

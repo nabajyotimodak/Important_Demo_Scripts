@@ -1,0 +1,9 @@
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  vars_files:
+    myconfig.yaml
+  tasks:
+    - name: Testing an echo Command.
+      debug:
+        msg: My user name is {{uname}} and My password is {{pass}}
